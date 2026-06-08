@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>의사선생님을 위한 메디컬 AI 에이전트 3종 요약서</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Poppins:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 1. 기본 스타일 및 브라우저 스크롤 차단 */
+        * { box-sizing: border-box; }
+        body {
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* 16:9 비율의 프레젠테이션 고정 캔버스 - 절대 중심 정렬 */
+        .presentation-viewport {
+            width: 1280px;
+            height: 720px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transform-origin: center center;
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 슬라이드 마스터 레이아웃 */
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease-in-out;
+            padding: 60px 80px 140px 80px; /* 컨트롤러 오버랩 방지용 하단 마진 가드 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* 초대형 타이포그래피 설정 (의사선생님용 시인성 극대화) */
+        h1 { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; color: #0f172a; margin: 0; }
+        h2.slide-title { 
+            font-size: 40px; 
+            color: #1e3a8a; /* Deep Cobalt Blue */
+            margin: 0;
+            margin-bottom: 20px; 
+            border-left: 10px solid #fbbf24; /* Golden yellow line */
+            padding-left: 20px; 
+            line-height: 1.2;
+            font-weight: 900;
+        }
+        
+        .desc-text { 
+            font-size: 28px; 
+            line-height: 1.6; 
+            color: #334155; 
+            font-weight: 400; 
+        }
+        .list-item { 
+            font-size: 26px; 
+            line-height: 1.5; 
+            color: #1e293b; 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 15px; 
+        }
+        .list-item i { 
+            color: #2563eb; 
+            margin-top: 6px; 
+            font-size: 24px; 
+            flex-shrink: 0;
+        }
+
+        /* 에이전트 라이브 데모 링크 전용 프리미엄 골드 버튼 */
+        .demo-link-btn { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 15px; 
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6); 
+            color: #ffffff; 
+            padding: 16px 35px; 
+            border-radius: 50px; 
+            font-size: 24px; 
+            font-weight: 900; 
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s ease;
+            margin-top: 15px;
+            width: fit-content;
+        }
+        .demo-link-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4);
+        }
+
+        /* 하단 고정 컨트롤러 바 */
+        .nav-bar { 
+            position: absolute; 
+            bottom: 35px; 
+            left: 80px; 
+            right: 80px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 100; 
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+        .dot-container { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; background: #cbd5e1; border-radius: 50%; transition: all 0.3s; cursor: pointer; }
+        .dot.active { width: 40px; background: #2563eb; border-radius: 10px; }
+        .page-num { color: #64748b; font-family: 'Poppins'; font-weight: 700; font-size: 20px; }
+
+        /* 상단 네온 데코 선 */
+        .top-accent-line {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 6px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6, #10b981);
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-800">
+
+<div id="presentation-canvas" class="presentation-viewport">
+    <div class="top-accent-line"></div>
+    
+    <!-- SLIDE 1: COVER (표지) -->
+    <div class="slide active" id="slide-1">
+        <div class="my-auto space-y-6">
+            <div class="inline-block bg-[#1e3a8a] text-white px-5 py-2 rounded-full text-xl font-bold tracking-wider uppercase font-poppins">B2B Hospital Automation Suite</div>
+            <h1 style="font-size: 68px; line-height: 1.2; letter-spacing: -2px; color: #1e3a8a;">진료 과목별 맞춤형<br><span class="text-blue-600">3대 원내 AI 에이전트 요약서</span></h1>
+            <p class="desc-text" style="font-size: 30px; color: #475569; font-weight: 300;">의료인 전용: 최신 의학지식 크롤링 및 의료법 필터 탑재</p>
+        </div>
+        <div class="flex justify-between items-center text-xs text-slate-400 font-semibold border-t border-slate-100 pt-5 mt-auto">
+            <span>PRESENTED BY GEMINI MEDICAL LAB</span>
+            <span>방향키 또는 마우스를 클릭해 다음 페이지로 이동</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: AGENT 1 - MEDIWRITER AI -->
+    <div class="slide" id="slide-2">
+        <h2 class="slide-title">1. 메디라이터 AI (의학 전문 블로그 작가)</h2>
+        <div class="grid grid-cols-12 gap-8 my-auto items-center">
+            <!-- Left: Description and bullets -->
+            <div class="col-span-7 space-y-6">
+                <p class="desc-text" style="font-weight: 500; color: #0f172a;">"의학적 근거와 의료광고법을 모두 해결한 블로그 마케터"</p>
+                <div class="space-y-4">
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>PubMed 논문 연동:</strong> 세계 공인 의학 저널의 최신 논문을 크롤링하여 깊이 있는 정보성 글을 양산합니다.</div>
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>의료광고법 세이프 가드:</strong> 행정 처분의 주 원인인 금지어(과장, 최초, 부작용 무)를 실시간 검출하여 순화합니다.</div>
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>원장 스마트폰 승인:</strong> AI 원고가 카톡 전송 ➡️ 원장 최종 [승인] 후 원격 발행되므로 안전합니다.</div>
+                </div>
+            </div>
+            <!-- Right: Link Card -->
+            <div class="col-span-5 bg-blue-50 border border-blue-200 p-6 rounded-2xl flex flex-col justify-between h-[300px]">
+                <div class="space-y-3">
+                    <span class="text-xs bg-blue-600 text-white font-black px-2.5 py-1 rounded">PubMed API 연동</span>
+                    <h3 class="text-2xl font-bold text-blue-900 mt-2">메디라이터 AI 라이브 데모</h3>
+                    <p class="text-base text-slate-600 leading-normal">원격 학술 블로그 생성 엔진의 실제 구동 결과물을 제미나이 쉐어링을 통해 직접 확인해 보세요.</p>
+                </div>
+                <a href="https://gemini.google.com/share/423992038a33" target="_blank" class="demo-link-btn text-center justify-center">
+                    <i class="fa-solid fa-circle-play"></i> 메디라이터 데모 보기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: AGENT 2 - TRUEBEFORE AI -->
+    <div class="slide" id="slide-3">
+        <h2 class="slide-title">2. 트루비포 AI (수술 전후 비식별 사실주의 에이전트)</h2>
+        <div class="grid grid-cols-12 gap-8 my-auto items-center">
+            <!-- Left: Description and bullets -->
+            <div class="col-span-7 space-y-6">
+                <p class="desc-text" style="font-weight: 500; color: #0f172a;">"가장 강력한 예약 전환 무기, 수술 전후 기록 자동화"</p>
+                <div class="space-y-4">
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>시각 지능 모자이크:</strong> 환자 얼굴 전후 사진 업로드 시 개인 식별 요소를 추적해 완벽히 자동 블러 처리합니다.</div>
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>사실주의 의학 서사:</strong> 대행사식 여신강림 카피가 아닌, 해부학적 해설과 부작용 및 치료 시기를 정직하게 고지합니다.</div>
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>의료법 완벽 우회:</strong> 의료법 제56조 2항의 까다로운 전후 사진 주의사항 매핑 규정을 100% 자동 준수합니다.</div>
+                </div>
+            </div>
+            <!-- Right: Link Card -->
+            <div class="col-span-5 bg-amber-50 border border-amber-200 p-6 rounded-2xl flex flex-col justify-between h-[300px]">
+                <div class="space-y-3">
+                    <span class="text-xs bg-amber-500 text-slate-950 font-black px-2.5 py-1 rounded">Vision AI Anonymizer</span>
+                    <h3 class="text-2xl font-bold text-amber-900 mt-2">트루비포 AI 라이브 데모</h3>
+                    <p class="text-base text-slate-600 leading-normal">안면 대칭 비식별 모자이크 및 법률 준수 전후 일지 초안을 제미나이 쉐어링으로 확인해 보세요.</p>
+                </div>
+                <a href="https://gemini.google.com/share/aba85d1c5cc3" target="_blank" class="demo-link-btn text-center justify-center" style="background: linear-gradient(135deg, #d97706, #f59e0b); color: #0f172a;">
+                    <i class="fa-solid fa-circle-play"></i> 트루비포 데모 보기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: AGENT 3 - MEDIANI AI -->
+    <div class="slide" id="slide-4">
+        <h2 class="slide-title">3. 메디애니 AI (의사 자연어 연동 복약/케어 가이드)</h2>
+        <div class="grid grid-cols-12 gap-8 my-auto items-center">
+            <!-- Left: Description and bullets -->
+            <div class="col-span-7 space-y-6">
+                <p class="desc-text" style="font-weight: 500; color: #0f172a;">"말 한마디로 환자를 평생 단골로 만드는 퇴원 사후 경험(CX)"</p>
+                <div class="space-y-4">
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>구글 생성 AI Veo 연동:</strong> 의사가 처방전 뒤편에 적은 짧은 메모 한 줄을 분석해 맞춤 비디오 가이드를 만듭니다.</div>
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>자동 애니메이션 생성:</strong> 복약 이행법, 수술 후 찜질 주기 등을 귀여운 2D 캐릭터 모션 영상으로 렌더링합니다.</div>
+                    <div class="list-item"><i class="fa-solid fa-circle-check"></i> <strong>상담 및 단순 리소스 소멸:</strong> "약 언제 먹어요?" 같은 단순 문의로 원내가 과부하되는 현상을 95% 이상 해결합니다.</div>
+                </div>
+            </div>
+            <!-- Right: Link Card -->
+            <div class="col-span-5 bg-emerald-50 border border-emerald-200 p-6 rounded-2xl flex flex-col justify-between h-[300px]">
+                <div class="space-y-3">
+                    <span class="text-xs bg-emerald-600 text-white font-black px-2.5 py-1 rounded">Google Veo Engine</span>
+                    <h3 class="text-2xl font-bold text-emerald-950 mt-2">메디애니 AI 라이브 데모</h3>
+                    <p class="text-base text-slate-600 leading-normal">의사 자연어 지침 연동 자동 영상 알림톡 템플릿 컴파일 예시를 제미나이 쉐어링으로 직접 감상하세요.</p>
+                </div>
+                <a href="https://gemini.google.com/share/f2739ca893a6" target="_blank" class="demo-link-btn text-center justify-center" style="background: linear-gradient(135deg, #047857, #10b981);">
+                    <i class="fa-solid fa-circle-play"></i> 메디애니 데모 보기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION UI (Slide bottom safely anchored space) -->
+    <div class="nav-bar">
+        <div class="dot-container" id="dot-wrap"></div>
+        <div class="page-num" id="slide-counter">01 / 04</div>
+        <div class="flex gap-4">
+            <button onclick="prev()" style="background: #e2e8f0; border: 1px solid #cbd5e1; color: #1e293b; width: 60px; height: 60px; border-radius: 15px; cursor: pointer; font-size: 24px; transition: all 0.2s;"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="next()" style="background: #e2e8f0; border: 1px solid #cbd5e1; color: #1e293b; width: 60px; height: 60px; border-radius: 15px; cursor: pointer; font-size: 24px; transition: all 0.2s;"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const total = 4;
+    let current = 1;
+
+    // 도트 동적 생성
+    const dotWrap = document.getElementById('dot-wrap');
+    for(let i=1; i<=total; i++){
+        const d = document.createElement('div');
+        d.className = 'dot' + (i===1 ? ' active' : '');
+        d.id = 'dot-'+i;
+        d.onclick = () => showSlide(i);
+        dotWrap.appendChild(d);
+    }
+
+    function showSlide(n) {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+        
+        document.getElementById('slide-'+n).classList.add('active');
+        document.getElementById('dot-'+n).classList.add('active');
+        document.getElementById('slide-counter').innerText = (n < 10 ? '0'+n : n) + ' / ' + total;
+        current = n;
+    }
+
+    function next() { current = current < total ? current + 1 : 1; showSlide(current); }
+    function prev() { current = current > 1 ? current - 1 : total; showSlide(current); }
+
+    // 키보드 바인딩 안정화 (스페이스바 스크롤 기본동작 차단 포함)
+    window.addEventListener('keydown', (e) => {
+        if(e.key === 'ArrowRight' || e.key === ' ' || e.code === 'Space') {
+            e.preventDefault();
+            next();
+        }
+        if(e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prev();
+        }
+    });
+
+    // 정밀 브라우저 중앙 맞춤형 16:9 렌더 스케일러
+    function scaleCanvas() {
+        const canvas = document.getElementById('presentation-canvas');
+        const scale = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+        canvas.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+    
+    window.addEventListener('resize', scaleCanvas);
+    window.addEventListener('load', scaleCanvas);
+    
+    // 실행 지연에 따른 안전 보정 구동
+    scaleCanvas();
+</script>
+
+</body>
+</html>
